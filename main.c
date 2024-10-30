@@ -109,6 +109,11 @@ uint16_t sign_extend(uint16_t x, int bit_count)
 	return x;
 }
 
+uint16_t swap16(uint16_t x)
+{
+	return (x << 8) | (x >> 8);
+}
+
 void update_flags(uint16_t r)
 {
 	if (reg[r] == 0)
@@ -117,11 +122,6 @@ void update_flags(uint16_t r)
 		reg[R_COND] = FL_NEG;
 	else
 		reg[R_COND] = FL_POS;
-}
-
-uint16_t swap16(uint16_t x)
-{
-	return (x << 8) | (x >> 8);
 }
 
 void read_image_file(FILE* file)
@@ -302,14 +302,14 @@ int main(int argc, const char* argv[])
 		{
 			uint16_t r0 = (instr >> 9) & 0x7;
 			uint16_t pc_offset = sign_extend(instr & 0x1FF, 9);
-			mem_write(reg[R_PC] + pc_offset, r0);
+			mem_write(reg[R_PC] + pc_offset, reg[r0]);
 		}
 		break;
 		case OP_STI:
 		{
 			uint16_t r0 = (instr >> 9) & 0x7;
 			uint16_t pc_offset = sign_extend(instr & 0x1FF, 9);
-			mem_write(mem_read(reg[R_PC] + pc_offset), r0);
+			mem_write(mem_read(reg[R_PC] + pc_offset), reg[r0]);
 		}
 		break;
 		case OP_STR:
@@ -317,7 +317,7 @@ int main(int argc, const char* argv[])
 			uint16_t r0 = (instr >> 9) & 0x7;
 			uint16_t r1 = (instr >> 6) & 0x7;
 			uint16_t pc_offset = sign_extend(instr & 0x3F, 6);
-			mem_write(reg[r1] + pc_offset, r0);
+			mem_write(reg[r1] + pc_offset, reg[r0]);
 		}
 		break;
 		case OP_TRAP:
