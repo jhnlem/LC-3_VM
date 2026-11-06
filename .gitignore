@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Build output
+a.out
+lc3
+*.o
+*.s
+*.dSYM/
